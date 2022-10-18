@@ -32,11 +32,12 @@ else
 
 //Funkar kommenterar bort denna så det funkar i android emulatorn utan certifikat. 
 //app.UseHttpsRedirection();
-
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

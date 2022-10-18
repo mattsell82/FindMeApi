@@ -13,7 +13,7 @@ namespace FindMeApi.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<Test> Get()
+        public async Task<ActionResult<Test>> Get()
         {
             return new Test { Email = "mattias.sellden@gmail.com", Password = "hejtest" };
         }

@@ -6,8 +6,8 @@ namespace FindMeApi.Data
 {
     public class ApplicationUser : IdentityUser
     {
-        public List<Location>? Locations { get; set; }
-        public List<ApplicationUser>? Followers { get; set; }
-        public List<ApplicationUser>? Following { get; set; }
+        public List<Location>? Locations { get; set; } = new List<Location>();
+        public List<ApplicationUser>? Followers { get; set; } = new List<ApplicationUser>();
+        public List<ApplicationUser>? Following { get; set; } = new List<ApplicationUser>();
     }
 }

@@ -24,6 +24,19 @@ namespace FindMeApi.Models
         public string Password { get; set; }
     }
 
+    public class LocationDto
+    {
+        public double? Accuracy { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
+        public string UserName { get; set; }
+    }
+
+    public class UserName
+    {
+        public string Email { get; set; }
+    }
 
 
 
