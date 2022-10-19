@@ -59,7 +59,11 @@ namespace FindMeApi.Controllers
                     Latitude = l.Latitude,
                     Longitude = l.Longitude,
                     TimeStamp = l.TimeStamp,
-                    UserName = user.UserName
+                    Altitude = l.Altitude,
+                    Course = l.Course,
+                    IsFromMockProvider = l.IsFromMockProvider,
+                    ReducedAccuracy = l.ReducedAccuracy,
+                    VerticalAccuracy = l.VerticalAccuracy 
                 })
                 .ToListAsync();
 
@@ -71,14 +75,18 @@ namespace FindMeApi.Controllers
 
         [Authorize]
         [HttpGet("/friendlocation/{friendUserName}")]
-        public async Task<ActionResult<List<Location>>> GetFriendLocations(string friendUserName)
+        public async Task<ActionResult<List<LocationDto>>> GetFriendLocations(string friendUserName)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (user is null)
                 return NotFound();
 
-            var friend = await _userManager.FindByNameAsync(friendUserName);
+            //var friend = await _userManager.FindByNameAsync(friendUserName);
+            var friend = await _dbContext.Users
+                .Include(u => u.Followers)
+                .Where(u => u.UserName == friendUserName)
+                .FirstOrDefaultAsync();
 
             if (friend is null)
                 return NotFound();
@@ -87,13 +95,29 @@ namespace FindMeApi.Controllers
             //checking if the friend has the user on his/her followers list.
             if (friend.Followers.Any(f => f == user))
             {
-                var result = await _dbContext.Locations.Where(l => l.User == friend).Take(20).ToListAsync();
+                var result = await _dbContext.Locations
+                    .Where(l => l.User == friend)
+                    .OrderByDescending(l => l.TimeStamp)
+                    .Take(20).ToListAsync();
 
                 if (result is null)
                     return NotFound();
 
-                //TODO ReturnDTO. 
-                return result;
+                var locationDtos = result
+                    .Select(l => new LocationDto { 
+                        Altitude = l.Altitude, 
+                        Course = l.Course, 
+                        IsFromMockProvider = l.IsFromMockProvider, 
+                        ReducedAccuracy = l.ReducedAccuracy, 
+                        VerticalAccuracy = l.VerticalAccuracy,
+                        Accuracy = l.Accuracy, 
+                        Latitude = l.Latitude, 
+                        Longitude = l.Longitude, 
+                        TimeStamp = l.TimeStamp,
+                    })
+                    .ToList();
+
+                return locationDtos;
             }
             else
             {
