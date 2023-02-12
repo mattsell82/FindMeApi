@@ -19,6 +19,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 var app = builder.Build();
 
+app.UsePathBase("/findmeapi");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -33,6 +35,7 @@ else
 //Funkar kommenterar bort denna så det funkar i android emulatorn utan certifikat. 
 //app.UseHttpsRedirection();
 app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
